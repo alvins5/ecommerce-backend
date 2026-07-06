@@ -20,6 +20,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/profile', [AuthController::class, 'profile']);
+    Route::put('/profile', [AuthController::class, 'updateProfile']);
 });
 
 Route::get('/user', function (Request $request) {
@@ -40,5 +41,9 @@ Route::apiResource('shipments', ShipmentController::class);
 // Custom Routes
 Route::get('/orders/{order}/items', [OrderController::class, 'items']);
 Route::get('/users/{user}/orders', [OrderController::class, 'userOrders']);
+Route::post('/orders/{order}/pay', [OrderController::class, 'pay'])->middleware('auth:sanctum');
 Route::get('/categories/{category}/products', [CategoryController::class, 'products']);
 Route::get('/products/brand/{brand}', [ProductController::class, 'byBrand']);
+
+// Webhooks
+Route::post('/webhooks/xendit', [\App\Http\Controllers\XenditWebhookController::class, 'handle']);

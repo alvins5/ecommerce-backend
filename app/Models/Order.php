@@ -12,6 +12,8 @@ class Order extends Model
         'status',
         'total_amount',
         'shipping_address',
+        'external_id',
+        'invoice_url',
     ];
     public $timestamps = false;
 

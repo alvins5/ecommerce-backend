@@ -14,6 +14,20 @@ class ProductController extends Controller
     {
         $query = Product::with(['category', 'brand']);
 
+        if ($request->has('search')) {
+            $searchTerm = $request->search;
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('product_name', 'like', '%' . $searchTerm . '%')
+                  ->orWhere('description', 'like', '%' . $searchTerm . '%')
+                  ->orWhereHas('category', function ($qCategory) use ($searchTerm) {
+                      $qCategory->where('category_name', 'like', '%' . $searchTerm . '%');
+                  })
+                  ->orWhereHas('brand', function ($qBrand) use ($searchTerm) {
+                      $qBrand->where('brand_name', 'like', '%' . $searchTerm . '%');
+                  });
+            });
+        }
+
         if ($request->has('brand_id')) {
             $query->where('brand_id', $request->brand_id);
         }
